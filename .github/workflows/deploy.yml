@@ -19,6 +19,11 @@ jobs:
                 push: false
                 tags: my-nodejs-app:latest
 
+        - name: set up docker compose
+          uses: docker/compose-action@v2
+          with:
+                compose-file: docker-compose.yml
+
         - name: run docker compose
           run: |
                 docker-compose up -d
