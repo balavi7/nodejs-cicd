@@ -24,16 +24,19 @@ jobs:
           with:
                 compose-file: docker-compose.yml
         
-        - name: run docker compose
+        
+        - name: start docker compose
+          uses: hoverkraft-tech/compose-action@05da55b2bb8a5a759d1c4732095044bd9018c050 # v2.4.3
+          with:
+                compose-file: docker-compose.yml
+                up-flags: "--build -d"
+
+        - name: Verify application is running
           run: |
-            docker-compose up --build -d
-            sleep 10  # wait for the app to start
-            docker-compose ps
-
-            #test if the app is running
-            curl -f http://localhost:3000 || exit 1
-
-            echo "App is running successfully"
+                sleep 10
+                docker compose ps
+                curl -f http://localhost:3000 || exit 1
+                echo "Application is running successfully"
         
 
     
