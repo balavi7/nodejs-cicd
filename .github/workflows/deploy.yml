@@ -23,12 +23,14 @@ jobs:
           uses: docker/setup-compose-action@v1
           with:
                 compose-file: docker-compose.yml
+        
+        - uses: actions/checkout@v4.2.2
 
         - name: run docker compose
-          run: |
-                docker-compose up -d
-                docker-compose ps
-        
+          uses: hoverkraft-tech/compose-action@05da55b2bb8a5a759d1c4732095044bd9018c050 # v2.4.3
+          with:
+                compose-file: docker-compose.yml
+                args: up -d --build
         
 
     
