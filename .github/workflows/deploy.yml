@@ -1,0 +1,29 @@
+name: Nodejs CI
+on:
+  push:
+    branches:
+        - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: checkout code
+          uses: actions/checkout@v2
+
+        - name: build docker image
+          uses: docker/build-push-action@v6
+          with:
+                context: .
+                push: false
+                tags: my-nodejs-app:latest
+
+        - name: run docker compose
+          run: |
+                docker-compose up -d
+                docker-compose ps
+        
+        
+
+    
