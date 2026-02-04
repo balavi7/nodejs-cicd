@@ -12,12 +12,32 @@ jobs:
         - name: checkout code
           uses: actions/checkout@v2
 
+        - name: trivy filesystem scan
+          uses: aquasecurity/trivy-action@v0.33.1
+          with:
+                scan-type: filesystem
+                scan-path: .
+                format: 'table'
+                exit-code: '1'
+                severity: 'CRITICAL,HIGH'
+                ignore-unfixed: true
+
         - name: build docker image
           uses: docker/build-push-action@v6
           with:
                 context: .
                 push: false
                 tags: my-nodejs-app:latest
+        
+        - name: trivy image scan
+          uses: aquasecurity/trivy-action@v0.33.1
+          with:
+                scan-type: image
+                image-ref: my-nodejs-app:latest
+                format: 'table'
+                exit-code: '1'
+                severity: 'CRITICAL,HIGH'
+                ignore-unfixed: true
 
         - name: set up docker compose
           uses: docker/setup-compose-action@v1
@@ -32,7 +52,7 @@ jobs:
 
         - name: Verify application is running
           run: |
-                sleep 10
+                sleep 5
                 docker compose ps
                 curl -f http://localhost:3000 || exit 1
                 echo "Application is running successfully"
