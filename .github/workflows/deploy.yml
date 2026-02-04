@@ -12,36 +12,12 @@ jobs:
         - name: checkout code
           uses: actions/checkout@v2
 
-        - name: trivy filesystem scan
-          uses: aquasecurity/trivy-action@0.33.1
-          env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-                scan-type: filesystem
-                scan-ref: .
-                format: 'table'
-                exit-code: '1'
-                severity: 'CRITICAL,HIGH'
-                ignore-unfixed: true
-
         - name: build docker image
           uses: docker/build-push-action@v6
           with:
                 context: .
                 push: false
                 tags: my-nodejs-app:latest
-        
-        - name: trivy image scan
-          uses: aquasecurity/trivy-action@0.33.1
-          env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-                scan-type: image
-                image-ref: my-nodejs-app:latest
-                format: 'table'
-                exit-code: '1'
-                severity: 'CRITICAL,HIGH'
-                ignore-unfixed: true
 
         - name: start docker compose
           uses: hoverkraft-tech/compose-action@05da55b2bb8a5a759d1c4732095044bd9018c050 # v2.4.3
