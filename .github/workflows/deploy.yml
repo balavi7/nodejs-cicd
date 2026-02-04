@@ -12,6 +12,9 @@ jobs:
         - name: checkout code
           uses: actions/checkout@v2
 
+        - name: trivy install
+          uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
+
         - name: trivy filesystem scan
           uses: aquasecurity/trivy-action@v0.33.1
           with:
