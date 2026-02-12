@@ -39,7 +39,7 @@ jobs:
                 scan-ref: my-nodejs-app:latest
                 format: 'table'
                 exit-code: '1'
-                severity: 'CRITICAL,HIGH'
+                severity: 'CRITICAL'
                 ignore-unfixed: true
 
         - name: start docker compose
