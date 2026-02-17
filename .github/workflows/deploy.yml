@@ -12,8 +12,8 @@ jobs:
         - name: checkout code
           uses: actions/checkout@v2
 
-        - name: SonarCloud Scan
-          uses: SonarSource/sonarcloud-github-action@master
+        - name: SonarQube Scan
+          uses: SonarSource/sonarqube-scan-action@v7.0.0
           env:
                 SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
