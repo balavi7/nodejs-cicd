@@ -12,6 +12,11 @@ jobs:
         - name: checkout code
           uses: actions/checkout@v2
 
+        - name: SonarCloud Scan
+          uses: SonarSource/sonarcloud-github-action@master
+          env:
+                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
         - name: trivy filesystem scan
           uses: aquasecurity/trivy-action@0.33.1
           env:
