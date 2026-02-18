@@ -60,5 +60,16 @@ jobs:
                 curl -f http://localhost:3000 || exit 1
                 echo "Application is running successfully"
         
+        - name: Deploy to remote server
+          uses: appleboy/ssh-action@v1
+          with:
+                host: ${{ secrets.EC2_HOST }}
+                username: ${{ secrets.EC2_USER }}
+                key: ${{ secrets.EC2_SSH_KEY }}
+                script: |
+                  cd ${{ secrets.EC2_APP_PATH }}
+                  git pull origin main
+                  docker compose up -d --build
+        
 
     
