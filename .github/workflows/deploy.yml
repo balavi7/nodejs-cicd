@@ -20,7 +20,8 @@ jobs:
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
                   cd ${{ secrets.EC2_APP_PATH }}
-                  ls -la
+                  mkdir logs
+                  ls -al
         
 
     
