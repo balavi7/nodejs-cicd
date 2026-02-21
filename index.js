@@ -24,7 +24,7 @@ console.log("Data written to file.");
 
 // Express route
 app.get("/", (req, res) => {
-  res.send("Hello from the server v4.3!");
+  res.send("Hello from the server v4.4!");
 });
 
 // Start server

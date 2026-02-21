@@ -48,18 +48,19 @@ jobs:
                 severity: 'CRITICAL'
                 ignore-unfixed: true
 
-        - name: start docker compose
-          uses: hoverkraft-tech/compose-action@05da55b2bb8a5a759d1c4732095044bd9018c050 # v2.4.3
-          with:
-                compose-file: docker-compose.yml
-                up-flags: "--build -d"
+        # - name: start docker compose
+        #   uses: hoverkraft-tech/compose-action@05da55b2bb8a5a759d1c4732095044bd9018c050 # v2.4.3
+        #   with:
+        #         compose-file: docker-compose.yml
+        #         up-flags: "--build -d"
+      
 
-        - name: Verify application is running
-          run: |
-                sleep 5
-                docker compose ps
-                curl -f http://localhost:3000 || exit 1
-                echo "Application is running successfully"
+        # - name: Verify application is running
+        #   run: |
+        #         sleep 5
+        #         docker compose ps
+        #         curl -f http://localhost:3000 || exit 1
+        #         echo "Application is running successfully"
         
         - name: Deploy to remote server
           uses: appleboy/ssh-action@v1
@@ -71,7 +72,13 @@ jobs:
                   cd ${{ secrets.EC2_APP_PATH }}
                   git pull origin main
                   docker-compose up -d --build
-                  
+        
+        - name: curl deployed application
+          run: |
+                sleep 5
+                curl -f http://${{ secrets.EC2_HOST }}|| exit 1
+                echo "Deployed application is running successfully"
+              
         
 
     
