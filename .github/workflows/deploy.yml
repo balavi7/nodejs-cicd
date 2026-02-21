@@ -11,6 +11,55 @@ jobs:
     steps:
         - name: checkout code
           uses: actions/checkout@v2
+
+        - name: SonarQube Scan
+          uses: SonarSource/sonarqube-scan-action@v7.0.0
+          env:
+                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+        - name: trivy filesystem scan
+          uses: aquasecurity/trivy-action@0.33.1
+          env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+                scan-type: filesystem
+                scan-ref: .
+                format: 'table'
+                exit-code: '1'
+                severity: 'CRITICAL,HIGH'
+                ignore-unfixed: true
+
+        - name: build docker image
+          uses: docker/build-push-action@v6
+          with:
+                context: .
+                push: false
+                tags: my-nodejs-app:latest
+
+        - name: trivy image scan
+          uses: aquasecurity/trivy-action@0.33.1
+          env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+                scan-type: image
+                scan-ref: my-nodejs-app:latest
+                format: 'table'
+                exit-code: '1'
+                severity: 'CRITICAL'
+                ignore-unfixed: true
+
+        - name: start docker compose
+          uses: hoverkraft-tech/compose-action@05da55b2bb8a5a759d1c4732095044bd9018c050 # v2.4.3
+          with:
+                compose-file: docker-compose.yml
+                up-flags: "--build -d"
+
+        - name: Verify application is running
+          run: |
+                sleep 5
+                docker compose ps
+                curl -f http://localhost:3000 || exit 1
+                echo "Application is running successfully"
         
         - name: Deploy to remote server
           uses: appleboy/ssh-action@v1
@@ -20,8 +69,9 @@ jobs:
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
                   cd ${{ secrets.EC2_APP_PATH }}
-                  mkdir logs
-                  ls -al
+                  git pull origin main
+                  docker compose up -d --build
+                  
         
 
     
